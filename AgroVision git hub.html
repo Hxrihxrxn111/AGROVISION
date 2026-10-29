@@ -1,0 +1,539 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>AgroVision</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Nunito+Sans:wght@400;600;700&display=swap">
+<style>
+/* Layout: sticky nav, soft-green hero with field illustration, then alternating white / pale-green sections. */
+:root {
+  --bg: #ffffff;
+  --surface: #f1f8ee;
+  --card: #ffffff;
+  --fg: #12301c;
+  --muted: #4b6455;
+  --accent: #1f7a3d;
+  --accent-ink: #ffffff;
+  --accent-soft: #dcefd9;
+  --line: #d3e5d1;
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1a12; --surface: #122319; --card: #15291d; --fg: #e5f2e7; --muted: #9ab4a1;
+    --accent: #4cc774; --accent-ink: #072012; --accent-soft: #1c3a27; --line: #25402e;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1a12; --surface: #122319; --card: #15291d; --fg: #e5f2e7; --muted: #9ab4a1;
+  --accent: #4cc774; --accent-ink: #072012; --accent-soft: #1c3a27; --line: #25402e;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 30; background: var(--bg);
+}
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+a { color: inherit; }
+button, select, input { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.wrap {
+  max-width: 1080px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+section { padding-block: 56px; scroll-margin-top: 64px; }
+section.alt { background: var(--surface); }
+.eyebrow { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.sec-head { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; max-width: 62ch; }
+.sec-head h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); }
+.sec-head p { color: var(--muted); }
+
+.pill {
+  display: inline-block; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.04em;
+  padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent);
+  border: 1px solid var(--line); white-space: nowrap;
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 11px 20px; border-radius: 10px; border: 2px solid var(--accent);
+  background: var(--accent); color: var(--accent-ink); font-weight: 700; cursor: pointer;
+  text-decoration: none; transition: transform .15s ease, background .15s ease;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn.small { padding: 7px 14px; font-size: 0.9rem; }
+
+/* Header */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bg); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; }
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; text-decoration: none; }
+.brand svg { width: 28px; height: 28px; flex: none; }
+.brand .leaf { fill: var(--accent); }
+.nav { display: flex; gap: 4px; }
+.nav a { padding: 8px 12px; border-radius: 8px; text-decoration: none; font-weight: 600; color: var(--muted); }
+.nav a:hover { background: var(--accent-soft); color: var(--accent); }
+.menu-btn { display: none; background: transparent; border: 2px solid var(--line); border-radius: 8px; padding: 6px 12px; cursor: pointer; font-weight: 700; }
+
+/* Hero */
+.hero { background: var(--surface); padding-block: 48px 0; overflow: hidden; }
+.hero .wrap { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 32px; align-items: center; }
+.hero h1 { font-size: clamp(2.1rem, 6vw, 3.6rem); font-weight: 800; letter-spacing: -0.02em; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero p.lead { margin-top: 16px; font-size: 1.1rem; color: var(--muted); max-width: 46ch; }
+.hero .actions { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 12px; }
+.hero .note { margin-top: 16px; font-size: 0.85rem; color: var(--muted); }
+.field { width: 100%; max-width: 100%; height: auto; display: block; align-self: end; }
+.field .sky { fill: var(--accent-soft); }
+.field .sun { fill: var(--bg); }
+.field .r1 { fill: var(--accent); opacity: .35; }
+.field .r2 { fill: var(--accent); opacity: .6; }
+.field .r3 { fill: var(--accent); }
+
+/* Weather */
+.weather-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.stat { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.stat .label { color: var(--muted); font-weight: 600; font-size: 0.9rem; }
+.stat .value { font-family: var(--font-display); font-size: 2.4rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.stat .value small { font-size: 1.1rem; font-weight: 700; color: var(--muted); margin-left: 4px; }
+.stat .hint { color: var(--muted); font-size: 0.88rem; }
+.tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 20px; }
+.seg { display: inline-flex; border: 2px solid var(--accent); border-radius: 10px; overflow: hidden; }
+.seg button { background: transparent; border: 0; padding: 8px 14px; font-weight: 700; cursor: pointer; color: var(--accent); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.forecast { margin-top: 24px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
+.forecast h3 { font-size: 1.05rem; margin-bottom: 14px; }
+.days { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; align-items: end; }
+.day { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; font-size: 0.88rem; }
+.day .bar-wrap { height: 80px; width: 100%; max-width: 44px; display: flex; align-items: flex-end; background: var(--accent-soft); border-radius: 8px; overflow: hidden; }
+.day .bar { width: 100%; background: var(--accent); border-radius: 8px 8px 0 0; transition: height .3s ease; }
+.day .t { font-weight: 700; font-variant-numeric: tabular-nums; }
+.day .mm { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* Recommendation */
+.rec { display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; align-items: start; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 24px; min-width: 0; }
+.field-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.field-group label { font-weight: 700; }
+.field-group select, .field-group input {
+  width: 100%; padding: 11px 12px; border-radius: 10px; border: 2px solid var(--line);
+  background: var(--bg); min-width: 0;
+}
+.field-group select:focus, .field-group input:focus { border-color: var(--accent); outline: none; }
+.field-group .help { font-size: 0.85rem; color: var(--muted); }
+.error { color: #b3261e; font-weight: 600; font-size: 0.9rem; min-height: 1.3em; margin-bottom: 8px; }
+:root[data-theme="dark"] .error { color: #ff8a80; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .error { color: #ff8a80; } }
+.result h3 { font-size: 1.5rem; margin: 10px 0 6px; }
+.result .why { color: var(--muted); }
+.ranks { margin: 20px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.ranks li { display: grid; grid-template-columns: 70px 1fr 44px; gap: 10px; align-items: center; font-weight: 600; }
+.ranks .track { height: 12px; background: var(--accent-soft); border-radius: 999px; overflow: hidden; }
+.ranks .fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width .4s ease; }
+.ranks .pct { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+
+/* Crops */
+.crops { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.crop { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.crop .badge { width: 48px; height: 48px; border-radius: 12px; background: var(--accent-soft); display: grid; place-items: center; }
+.crop .badge svg { width: 28px; height: 28px; }
+.crop .badge .ic { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.crop h3 { font-size: 1.3rem; }
+.crop .season { font-size: 0.88rem; color: var(--muted); }
+.crop dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 0.92rem; }
+.crop dt { color: var(--muted); }
+.crop dd { margin: 0; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+.crop .more { color: var(--muted); font-size: 0.92rem; border-top: 1px solid var(--line); padding-top: 12px; }
+.crop .btn { margin-top: auto; }
+
+/* Tips */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.chip { border: 2px solid var(--line); background: var(--card); padding: 6px 16px; border-radius: 999px; font-weight: 700; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.tips { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.tip { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.tip h3 { font-size: 1.05rem; }
+.tip p { color: var(--muted); font-size: 0.95rem; }
+
+/* About */
+.about { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+.about .text { display: flex; flex-direction: column; gap: 14px; color: var(--muted); }
+.about .text p:first-child { color: var(--fg); font-size: 1.1rem; }
+.points { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.points li { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+.points strong { display: block; font-family: var(--font-display); font-size: 1.05rem; margin-bottom: 2px; }
+.points span { color: var(--muted); font-size: 0.95rem; }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px; color: var(--muted); font-size: 0.9rem; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; }
+
+@media (max-width: 900px) {
+  .crops { grid-template-columns: repeat(2, 1fr); }
+  .rec, .about { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .menu-btn { display: inline-block; }
+  .nav { display: none; position: absolute; left: 0; right: 0; top: 100%; flex-direction: column; background: var(--bg); border-bottom: 1px solid var(--line); padding: 8px max(16px, env(safe-area-inset-right, 0px)) 12px max(16px, env(safe-area-inset-left, 0px)); }
+  .nav.open { display: flex; }
+  .hero .wrap { grid-template-columns: 1fr; }
+  .weather-grid { grid-template-columns: 1fr; }
+  section { padding-block: 40px; }
+}
+@media (max-width: 520px) {
+  .crops { grid-template-columns: 1fr; }
+  .days { gap: 6px; }
+  .ranks li { grid-template-columns: 60px 1fr 40px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; }
+}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#home" data-go="home" aria-label="AgroVision home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path class="leaf" d="M16 3C9 8 6 14 6 19a10 10 0 0 0 20 0C26 14 23 8 16 3Z"/><path d="M16 28V13" stroke="var(--bg)" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+      AgroVision
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="#weather" data-go="weather">Weather</a>
+      <a href="#recommend" data-go="recommend">Recommend</a>
+      <a href="#crops" data-go="crops">Crops</a>
+      <a href="#tips" data-go="tips">Tips</a>
+      <a href="#about" data-go="about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="home" style="padding-bottom:0">
+    <div class="wrap">
+      <div style="padding-bottom:48px">
+        <span class="pill">College project demo</span>
+        <h1 style="margin-top:14px">AgroVision – Smart Farming <em>Starts Here</em></h1>
+        <p class="lead">Check the weather, find a crop that suits your soil and rainfall, and pick up simple farming tips, all in one place.</p>
+        <div class="actions">
+          <button class="btn" data-go="recommend">Get a crop recommendation</button>
+          <button class="btn ghost" data-go="weather">See today's weather</button>
+        </div>
+        <p class="note">All weather figures and recommendations on this site are sample data for demonstration.</p>
+      </div>
+      <svg class="field" viewBox="0 0 400 300" role="img" aria-label="Illustration of a sun above rows of crops in a field">
+        <rect class="sky" x="0" y="0" width="400" height="300" rx="24"/>
+        <circle class="sun" cx="300" cy="80" r="42"/>
+        <path class="r1" d="M0 170 Q100 140 200 160 T400 150 V300 H0Z"/>
+        <path class="r2" d="M0 210 Q110 180 210 200 T400 190 V300 H0Z"/>
+        <path class="r3" d="M0 250 Q120 220 220 240 T400 230 V300 H0Z"/>
+      </svg>
+    </div>
+  </section>
+
+  <section id="weather">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Weather</span>
+        <h2>Today on the farm</h2>
+        <p>Sample conditions for a demo location. Press refresh to see new sample readings.</p>
+      </div>
+      <div class="weather-grid">
+        <div class="stat"><span class="label">Temperature</span><span class="value"><span id="wTemp">29</span><small id="wTempUnit">°C</small></span><span class="hint" id="wTempHint">Warm, good for field work</span></div>
+        <div class="stat"><span class="label">Humidity</span><span class="value"><span id="wHum">68</span><small>%</small></span><span class="hint" id="wHumHint">Comfortable range</span></div>
+        <div class="stat"><span class="label">Rainfall today</span><span class="value"><span id="wRain">12</span><small>mm</small></span><span class="hint" id="wRainHint">Light rain, soil stays moist</span></div>
+      </div>
+      <div class="tools">
+        <button class="btn small" id="refreshWeather">Refresh sample data</button>
+        <div class="seg" role="group" aria-label="Temperature unit">
+          <button id="unitC" aria-pressed="true">°C</button>
+          <button id="unitF" aria-pressed="false">°F</button>
+        </div>
+        <span class="pill">Sample data</span>
+      </div>
+      <div class="forecast">
+        <h3>5-day rainfall outlook (mm, sample)</h3>
+        <div class="days" id="days"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="recommend" class="alt">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Crop recommendation</span>
+        <h2>Which crop suits your field?</h2>
+        <p>Choose your soil type and enter your yearly rainfall. AgroVision compares them with typical needs of four common crops.</p>
+      </div>
+      <div class="rec">
+        <form class="panel" id="recForm" novalidate>
+          <div class="field-group">
+            <label for="soil">Soil type</label>
+            <select id="soil">
+              <option value="alluvial">Alluvial</option>
+              <option value="black">Black (Regur)</option>
+              <option value="red">Red</option>
+              <option value="clay">Clay</option>
+              <option value="loamy">Loamy</option>
+              <option value="sandy">Sandy</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="rain">Annual rainfall (mm)</label>
+            <input id="rain" type="number" min="0" max="5000" step="10" inputmode="numeric" value="900">
+            <span class="help">India's yearly average is about 1,100 mm. Try values between 300 and 2,500.</span>
+          </div>
+          <p class="error" id="recError" role="alert"></p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn" type="submit">Recommend a crop</button>
+            <button class="btn ghost" type="button" id="recReset">Reset</button>
+          </div>
+        </form>
+        <div class="panel result" id="recResult" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="crops">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Crop information</span>
+        <h2>Four crops at a glance</h2>
+        <p>Typical growing conditions. Real values vary by variety and region, so treat these as sample guidance.</p>
+      </div>
+      <div class="crops" id="cropGrid"></div>
+    </div>
+  </section>
+
+  <section id="tips" class="alt">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Farming tips</span>
+        <h2>Small habits, better harvests</h2>
+        <p>Filter by topic to find a tip you can use this week.</p>
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="Tip topics"></div>
+      <div class="tips" id="tipList"></div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="wrap about">
+      <div class="sec-head" style="margin-bottom:0">
+        <span class="eyebrow">About AgroVision</span>
+        <h2>Better decisions before the first seed</h2>
+        <div class="text" style="margin-top:8px">
+          <p>AgroVision is a college project that shows how a simple web tool can help farmers plan with confidence.</p>
+          <p>Choosing what to grow depends on soil, water and season. AgroVision brings these together on one screen, so a farmer can see the weather, compare crops against local conditions and read practical advice without searching several places.</p>
+          <p>This version runs entirely in your browser with sample data. A full version could connect to live weather services and local soil records.</p>
+        </div>
+      </div>
+      <ul class="points">
+        <li><strong>See conditions early</strong><span>Temperature, humidity and rainfall help you time sowing and irrigation.</span></li>
+        <li><strong>Match crop to land</strong><span>The recommender scores each crop against your soil and rainfall.</span></li>
+        <li><strong>Learn as you go</strong><span>Crop cards and tips explain seasons, water needs and common problems.</span></li>
+        <li><strong>No sign-up needed</strong><span>Open the page and use every feature right away.</span></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>AgroVision – Smart Farming Platform · College project</span>
+    <span>All data shown is sample data, not real advice.</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ---------- Navigation ---------- */
+  function goTo(id) {
+    var el = $(id);
+    if (!el) return;
+    el.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    $('nav').classList.remove('open');
+    $('menuBtn').setAttribute('aria-expanded', 'false');
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-go]');
+    if (t) { e.preventDefault(); goTo(t.getAttribute('data-go')); }
+  });
+  $('menuBtn').addEventListener('click', function () {
+    var open = $('nav').classList.toggle('open');
+    this.setAttribute('aria-expanded', String(open));
+  });
+
+  /* ---------- Weather (sample data) ---------- */
+  var weather = { c: 29, hum: 68, rain: 12, days: [4, 10, 22, 8, 0] };
+  var useF = false;
+  var dayNames = ['Today', 'Tomorrow', '', '', ''];
+
+  function dayLabel(i) {
+    if (i < 2) return dayNames[i];
+    var d = new Date(); d.setDate(d.getDate() + i);
+    return d.toLocaleDateString('en-IN', { weekday: 'short' });
+  }
+  function renderWeather() {
+    var temp = useF ? Math.round(weather.c * 9 / 5 + 32) : weather.c;
+    $('wTemp').textContent = temp;
+    $('wTempUnit').textContent = useF ? '°F' : '°C';
+    $('wHum').textContent = weather.hum;
+    $('wRain').textContent = weather.rain;
+    $('wTempHint').textContent = weather.c >= 33 ? 'Hot, irrigate early morning' : weather.c >= 24 ? 'Warm, good for field work' : 'Cool, good for wheat and vegetables';
+    $('wHumHint').textContent = weather.hum >= 80 ? 'High, watch for fungal disease' : weather.hum >= 50 ? 'Comfortable range' : 'Dry air, check soil moisture';
+    $('wRainHint').textContent = weather.rain >= 30 ? 'Heavy rain, check drainage' : weather.rain >= 5 ? 'Light rain, soil stays moist' : 'No meaningful rain, plan irrigation';
+    var max = Math.max.apply(null, weather.days.concat([10]));
+    $('days').innerHTML = weather.days.map(function (mm, i) {
+      return '<div class="day"><div class="bar-wrap"><div class="bar" style="height:' + Math.round(mm / max * 100) + '%"></div></div>' +
+        '<span class="mm">' + mm + ' mm</span><span class="t">' + dayLabel(i) + '</span></div>';
+    }).join('');
+  }
+  function rnd(a, b) { return Math.round(a + Math.random() * (b - a)); }
+  $('refreshWeather').addEventListener('click', function () {
+    weather.c = rnd(20, 38);
+    weather.hum = rnd(40, 92);
+    weather.rain = rnd(0, 40);
+    weather.days = [weather.rain, rnd(0, 30), rnd(0, 30), rnd(0, 30), rnd(0, 30)];
+    renderWeather();
+  });
+  function setUnit(f) {
+    useF = f;
+    $('unitC').setAttribute('aria-pressed', String(!f));
+    $('unitF').setAttribute('aria-pressed', String(f));
+    renderWeather();
+  }
+  $('unitC').addEventListener('click', function () { setUnit(false); });
+  $('unitF').addEventListener('click', function () { setUnit(true); });
+
+  /* ---------- Crop data ---------- */
+  var crops = {
+    Rice:  { season: 'Kharif · sow Jun–Jul', soil: 'Clay, alluvial', rain: [1200, 2000], temp: '20–35 °C', days: '110–150',
+             soils: { alluvial: 1, clay: 1, loamy: .6, black: .5, red: .3, sandy: .1 },
+             icon: '<path d="M12 21V8"/><path d="M12 8c-3 0-4-3-4-5 3 0 4 2 4 5Z"/><path d="M12 12c3 0 4-3 4-5-3 0-4 2-4 5Z"/><path d="M12 16c-3 0-4-3-4-5 3 0 4 2 4 5Z"/>',
+             more: 'Needs standing water during early growth. Level the field well so water spreads evenly.' },
+    Wheat: { season: 'Rabi · sow Nov–Dec', soil: 'Loamy, alluvial', rain: [500, 900], temp: '10–25 °C', days: '120–150',
+             soils: { loamy: 1, alluvial: 1, clay: .7, black: .6, red: .4, sandy: .3 },
+             icon: '<path d="M12 22V9"/><path d="M12 9c-2-1-3-3-3-5 2 1 3 3 3 5Z"/><path d="M12 9c2-1 3-3 3-5-2 1-3 3-3 5Z"/><path d="M12 14c-2-1-3-3-3-5"/><path d="M12 14c2-1 3-3 3-5"/>',
+             more: 'Prefers cool weather while growing and dry warmth at harvest. Irrigate at crown root and flowering stages.' },
+    Maize: { season: 'Kharif and Rabi', soil: 'Loamy, red', rain: [600, 1100], temp: '21–27 °C', days: '90–120',
+             soils: { loamy: 1, red: .8, alluvial: .8, sandy: .6, black: .5, clay: .4 },
+             icon: '<path d="M12 3c-3 3-3 9 0 14 3-5 3-11 0-14Z"/><path d="M12 17v4"/><path d="M12 12c-3 0-5-1-6-3"/><path d="M12 14c3 0 5-1 6-3"/>',
+             more: 'Grows fast and uses plenty of nitrogen. Avoid waterlogging, which damages young roots.' },
+    Cotton:{ season: 'Kharif · sow Apr–Jun', soil: 'Black (Regur)', rain: [600, 1000], temp: '21–30 °C', days: '150–180',
+             soils: { black: 1, alluvial: .7, red: .6, loamy: .6, clay: .5, sandy: .3 },
+             icon: '<circle cx="8" cy="12" r="3.5"/><circle cx="16" cy="12" r="3.5"/><circle cx="12" cy="7.5" r="3.5"/><path d="M12 16v5"/>',
+             more: 'Likes deep black soil that holds moisture. Scout weekly for bollworm and other pests.' }
+  };
+  var soilNames = { alluvial: 'alluvial', black: 'black (Regur)', red: 'red', clay: 'clay', loamy: 'loamy', sandy: 'sandy' };
+
+  /* ---------- Recommendation ---------- */
+  function rainScore(mm, range) {
+    if (mm >= range[0] && mm <= range[1]) return 1;
+    var d = mm < range[0] ? range[0] - mm : mm - range[1];
+    return Math.max(0, 1 - d / 500);
+  }
+  function recommend(soil, mm) {
+    return Object.keys(crops).map(function (name) {
+      var c = crops[name];
+      var s = c.soils[soil], r = rainScore(mm, c.rain);
+      return { name: name, soil: s, rain: r, score: Math.round((s * 0.5 + r * 0.5) * 100) };
+    }).sort(function (a, b) { return b.score - a.score; });
+  }
+  function renderResult(soil, mm) {
+    var res = recommend(soil, mm), best = res[0], c = crops[best.name];
+    var why;
+    if (best.score < 40) {
+      why = 'None of these four crops fit well. Your rainfall of ' + mm + ' mm is far from what they need, so irrigation or a different crop may be required.';
+    } else {
+      var soilPart = best.soil >= .8 ? soilNames[soil] + ' soil suits it well' : best.soil >= .5 ? soilNames[soil] + ' soil works with some care' : soilNames[soil] + ' soil is not ideal';
+      var rainPart = best.rain === 1 ? mm + ' mm sits inside its ideal range of ' + c.rain[0] + '–' + c.rain[1] + ' mm' : mm + ' mm is outside its ideal range of ' + c.rain[0] + '–' + c.rain[1] + ' mm';
+      why = soilPart.charAt(0).toUpperCase() + soilPart.slice(1) + ', and ' + rainPart + '.';
+    }
+    $('recResult').innerHTML =
+      '<span class="pill">Sample recommendation</span>' +
+      '<h3>' + (best.score < 40 ? 'No strong match' : 'Best match: ' + best.name) + '</h3>' +
+      '<p class="why">' + why + '</p>' +
+      '<ul class="ranks">' + res.map(function (r) {
+        return '<li><span>' + r.name + '</span><span class="track"><span class="fill" style="display:block;width:' + r.score + '%"></span></span><span class="pct">' + r.score + '%</span></li>';
+      }).join('') + '</ul>';
+  }
+  function submitRec() {
+    var mm = parseFloat($('rain').value);
+    if (isNaN(mm) || mm < 0 || mm > 5000) {
+      $('recError').textContent = 'Enter a rainfall between 0 and 5000 mm.';
+      return;
+    }
+    $('recError').textContent = '';
+    renderResult($('soil').value, mm);
+  }
+  $('recForm').addEventListener('submit', function (e) { e.preventDefault(); submitRec(); });
+  $('recReset').addEventListener('click', function () {
+    $('soil').value = 'alluvial'; $('rain').value = 900; $('recError').textContent = ''; renderResult('alluvial', 900);
+  });
+
+  /* ---------- Crop cards ---------- */
+  $('cropGrid').innerHTML = Object.keys(crops).map(function (name) {
+    var c = crops[name];
+    return '<article class="crop">' +
+      '<div class="badge"><svg viewBox="0 0 24 24" aria-hidden="true"><g class="ic">' + c.icon + '</g></svg></div>' +
+      '<div><h3>' + name + '</h3><p class="season">' + c.season + '</p></div>' +
+      '<dl><dt>Soil</dt><dd>' + c.soil + '</dd><dt>Rainfall</dt><dd>' + c.rain[0] + '–' + c.rain[1] + ' mm</dd>' +
+      '<dt>Temperature</dt><dd>' + c.temp + '</dd><dt>Duration</dt><dd>' + c.days + ' days</dd></dl>' +
+      '<p class="more" hidden>' + c.more + '</p>' +
+      '<button class="btn ghost small" data-more aria-expanded="false">More details</button>' +
+      '</article>';
+  }).join('');
+  $('cropGrid').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-more]');
+    if (!b) return;
+    var p = b.parentNode.querySelector('.more');
+    p.hidden = !p.hidden;
+    b.setAttribute('aria-expanded', String(!p.hidden));
+    b.textContent = p.hidden ? 'More details' : 'Show less';
+  });
+
+  /* ---------- Tips ---------- */
+  var tips = [
+    { t: 'Soil', h: 'Test your soil yearly', p: 'A basic soil test shows pH and nutrients, so you add only the fertiliser your field needs.' },
+    { t: 'Soil', h: 'Add compost or farmyard manure', p: 'Organic matter helps sandy soil hold water and loosens heavy clay.' },
+    { t: 'Water', h: 'Irrigate early morning', p: 'Less water evaporates before reaching roots, and leaves dry out during the day.' },
+    { t: 'Water', h: 'Mulch to save moisture', p: 'A layer of straw or crop residue keeps soil cooler and cuts weeds.' },
+    { t: 'Pests', h: 'Scout your fields every week', p: 'Walk the rows and check leaf undersides. Catching pests early means smaller, cheaper treatment.' },
+    { t: 'Pests', h: 'Rotate crops each season', p: 'Switching between cereals and pulses breaks pest cycles and restores nitrogen.' },
+    { t: 'Season', h: 'Sow with the first steady rain', p: 'Wait for reliable rainfall before sowing Kharif crops so seedlings do not dry out.' },
+    { t: 'Season', h: 'Plan harvest around the forecast', p: 'Check the weather outlook and harvest before heavy rain to avoid grain loss.' }
+  ];
+  var topics = ['All', 'Soil', 'Water', 'Pests', 'Season'], active = 'All';
+  function renderTips() {
+    $('chips').innerHTML = topics.map(function (t) {
+      return '<button class="chip" data-topic="' + t + '" aria-pressed="' + (t === active) + '">' + t + '</button>';
+    }).join('');
+    $('tipList').innerHTML = tips.filter(function (x) { return active === 'All' || x.t === active; }).map(function (x) {
+      return '<article class="tip"><span class="pill" style="align-self:flex-start">' + x.t + '</span><h3>' + x.h + '</h3><p>' + x.p + '</p></article>';
+    }).join('');
+  }
+  $('chips').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-topic]');
+    if (b) { active = b.getAttribute('data-topic'); renderTips(); }
+  });
+
+  /* ---------- Start ---------- */
+  renderWeather();
+  renderResult('alluvial', 900);
+  renderTips();
+})();
+</script>
+
+</body></html>
